@@ -1,0 +1,49 @@
+[Unit]
+Description=Prometheus coredump exporter
+Documentation=https://github.com/mikelolasagasti/coredump_exporter
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=coredump-exporter
+Group=coredump-exporter
+SupplementaryGroups=systemd-journal
+ExecStart=/usr/bin/coredump_exporter --web.listen-address=:9113
+Restart=on-failure
+RestartSec=5s
+
+# Identity / privilege
+NoNewPrivileges=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+PrivateUsers=false
+
+# Filesystem sandbox
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectProc=invisible
+ProtectControlGroups=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectClock=true
+ProtectHostname=true
+UMask=0077
+
+# Process / memory isolation
+LockPersonality=true
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+RemoveIPC=true
+DevicePolicy=closed
+
+# Network (all interfaces — no IPAddressDeny)
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target
