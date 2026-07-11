@@ -1,0 +1,61 @@
+version: 2
+
+project_name: coredump_exporter
+
+before:
+  hooks:
+    - go mod download
+
+builds:
+  - id: linux_amd64
+    main: ./cmd/coredump_exporter
+    binary: coredump_exporter
+    env:
+      - CGO_ENABLED=1
+      - CC=gcc
+    goos:
+      - linux
+    goarch:
+      - amd64
+    ldflags:
+      - -s -w
+      - -X main.version={{ .Version }}
+      - -X main.date={{ .Date }}
+
+  - id: linux_arm64
+    main: ./cmd/coredump_exporter
+    binary: coredump_exporter
+    env:
+      - CGO_ENABLED=1
+      - CC=aarch64-linux-gnu-gcc
+      - PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig
+    goos:
+      - linux
+    goarch:
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{ .Version }}
+      - -X main.date={{ .Date }}
+
+archives:
+  - id: default
+    ids:
+      - linux_amd64
+      - linux_arm64
+    formats:
+      - tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+      - coredump_exporter.service
+
+checksum:
+  name_template: checksums.txt
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
