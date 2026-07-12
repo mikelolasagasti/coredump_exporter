@@ -1,9 +1,9 @@
 module github.com/mikelolasagasti/coredump-exporter
 
-go 1.22
+go 1.23
 
 require (
-	github.com/coreos/go-systemd/v22 v22.5.0
+	github.com/coreos/go-systemd/v22 v22.7.0
 	github.com/prometheus/client_golang v1.20.5
 	github.com/prometheus/client_model v0.6.1
 )
